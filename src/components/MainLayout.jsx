@@ -7,8 +7,9 @@ import {
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Breadcrumb, Button, Layout, Menu, theme } from "antd";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -21,21 +22,22 @@ function getItem(label, key, icon, children) {
   };
 }
 
-const items = [
+
+const MainLayout = ({ children }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  // const {
+  //   token: { colorBgContainer, borderRadiusLG },
+  // } = theme.useToken();
+  const {logout} = useAuth()
+  const items = [
   getItem(<Link href={"../login"}>ورود و ثبت نام</Link>, "1", <UserOutlined />),
   getItem(<Link href="">گفتگو ها</Link>, "sub1", <MessageOutlined />, [
     getItem(<Link href={`/chat/${1}`}>سلام چطوری</Link>, "3"),
     getItem(<Link href={`/chat/${2}`}>تست اپ</Link>, "4"),
     getItem(<Link href={`/chat/${3}`}>درباره Next.js</Link>, "5"),
   ]),
-  getItem(<Link href={"/exit"}>خروج</Link>, "9", <LogoutOutlined />),
+  getItem(<Button type="text" onClick={() => logout()}><Link href={"/login"}>خروج</Link></Button>, "9", <LogoutOutlined />),
 ];
-
-const MainLayout = ({ children }) => {
-  const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
 
   return (
     <Layout

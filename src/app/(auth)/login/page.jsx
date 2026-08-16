@@ -1,10 +1,12 @@
 "use client";
+import { useAuth } from "@/context/AuthContext";
 import { BASE_URL } from "@/utils/config";
 import { Button, Card, Form, Input, message } from "antd";
 import axios from "axios";
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const [messageApi, contextHolder] = message.useMessage();
+  const {user, login} = useAuth()
   const [form] = Form.useForm();
 
   return (
@@ -20,6 +22,7 @@ export default function RegisterPage() {
               .post(`${BASE_URL}/login`, value)
               .then((res) => {
                 console.log(res);
+                login(res.data.token)
                 form.resetFields();
                 messageApi.open({
                   type: "success",

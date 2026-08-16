@@ -4,6 +4,8 @@ import "./fonts.css";
 import "@ant-design/v5-patch-for-react-19";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import MainLayout from "@/components/MainLayout";
+import { AuthProvider } from "@/context/AuthContext";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,9 +21,11 @@ export default function RootLayout({
     <html lang="fa" dir="rtl">
       <body className="bg-gray-50">
         <AntdRegistry>
-          <MainLayout>
+          <AuthProvider>
+            <MainLayout>
             {children}
-          </MainLayout>
+            </MainLayout>
+          </AuthProvider>
         </AntdRegistry>
       </body>
     </html>

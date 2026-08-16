@@ -1,12 +1,26 @@
-"use server"
-import jwt from "jsonwebtoken"
-import { SECRET_KEY } from "./config"
+export const tokenDecoder = (token) => {
+  if (!token || typeof token !== "string") {
+    return null
+  }
 
-export const tokenDecoder = async (token) => {
+  try {
+    const parts = token.split(".")
+    if (parts.length !== 3) {
+      return null
+    }
 
-        const decode = jwt.verify(token, SECRET_KEY)
+    const base64Url = parts[1]
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/")
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    )
 
-        return decode;
-    
-    
+    return JSON.parse(jsonPayload)
+  } catch (err) {
+    console.error("خطا در دیکود توکن:", err.message)
+    return null
+  }
 }
