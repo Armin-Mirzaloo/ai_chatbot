@@ -21,4 +21,14 @@ model User {
   email    String
   password String
   created  DateTime @default(now())
+  tokens   Tokens[]
+}
+
+model Tokens {
+  user_id     Int
+  token       String
+  device_id   String
+  user        User  @relation(fields: [user_id], references: [id]) 
+  
+  @@id([token, user_id])
 }
