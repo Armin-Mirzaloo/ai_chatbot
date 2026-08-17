@@ -5,6 +5,7 @@ import "@ant-design/v5-patch-for-react-19";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import MainLayout from "@/components/MainLayout";
 import { AuthProvider } from "@/context/AuthContext";
+import { LayoutProvider } from "@/context/LayoutContext";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -22,9 +23,11 @@ export default function RootLayout({
       <body className="bg-gray-50">
         <AntdRegistry>
           <AuthProvider>
-            <MainLayout>
-            {children}
-            </MainLayout>
+            <LayoutProvider>
+              <MainLayout>
+                {children}
+              </MainLayout>
+            </LayoutProvider>
           </AuthProvider>
         </AntdRegistry>
       </body>

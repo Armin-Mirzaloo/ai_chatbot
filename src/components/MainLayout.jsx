@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LogoutOutlined,
   FileOutlined,
@@ -10,6 +10,10 @@ import {
 import { Breadcrumb, Button, Layout, Menu, theme } from "antd";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { useLayout } from "@/context/LayoutContext";
+import axios from "axios";
+import { BASE_URL } from "@/utils/config";
+import { res } from "@/utils/route-handler-response";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -28,14 +32,30 @@ const MainLayout = ({ children }) => {
   // const {
   //   token: { colorBgContainer, borderRadiusLG },
   // } = theme.useToken();
-  const {logout} = useAuth()
+  const [ConvListLoading, setConvListLoading] = useState(false)
+  const {user, logout} = useAuth()
+  const {conversationsList, setConversationsList} = useLayout()
+
+  useEffect(() => {
+    if(user?.id && !ConvListLoading) {
+      setConvListLoading(true)
+      axios.get(`${BASE_URL}/chat?user_id=${user.id}`)
+      .then((res) => {console.log(res, " is conversations List")
+        setConversationsList(res.data)
+        setConvListLoading(false)
+      })
+      .catch((err) => {console.log(err)
+        setConvListLoading(false)
+      })
+      setTimeout(() => {}, 2000)
+    } else {
+      return
+    }
+  })
+
   const items = [
   getItem(<Link href={"../login"}>ورود و ثبت نام</Link>, "1", <UserOutlined />),
-  getItem(<Link href="">گفتگو ها</Link>, "sub1", <MessageOutlined />, [
-    getItem(<Link href={`/chat/${1}`}>سلام چطوری</Link>, "3"),
-    getItem(<Link href={`/chat/${2}`}>تست اپ</Link>, "4"),
-    getItem(<Link href={`/chat/${3}`}>درباره Next.js</Link>, "5"),
-  ]),
+  getItem(<Link href="">گفتگو ها</Link>, "sub1", <MessageOutlined />, conversationsList.map((conv) => getItem(<Link href={`/chat/${conv.id}`}>{conv.title}</Link>, conv.id))),
   getItem(<Button type="text" onClick={() => logout()}><Link href={"/login"}>خروج</Link></Button>, "9", <LogoutOutlined />),
 ];
 

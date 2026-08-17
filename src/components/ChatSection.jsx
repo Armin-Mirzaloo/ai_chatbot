@@ -5,22 +5,40 @@ import axios from "axios";
 import { BASE_URL } from "@/utils/config";
 import { message } from "antd";
 import { res } from "@/utils/route-handler-response";
+import { useAuth } from "@/context/AuthContext";
+import { useLayout } from "@/context/LayoutContext";
 
 export const ChatSection = ({ chatId }) => {
   const [messages, setMessages] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const [input, setInput] = useState("");
   const [loadMessages, setLoadMessages] = useState(false)
+  const {user} = useAuth()
+  const {setConversationsList} = useLayout()
 
   const handleSendMessage = () => {
     if (input.trim() === "") return;
     if(chatId) {
+
       axios.post(`${BASE_URL}/chat/${chatId}/message`, {conversation_id:parseInt(chatId), sender:"USER", content:input})
       .then((res) => {console.log(res)
-            setMessages(res.data.messages);
+         setMessages(res.data.messages);
       })
       .catch((err) => {console.log(err)})
+
+    } else {
+
+      axios.post(`${BASE_URL}/chat`, {user_id:parseInt(user.id), title:"title1"})
+      .then((res) => {console.log(res)
+      //      setMessages(res.data.messages);
+        setConversationsList(res.data.conversations)
+      })
+      .catch((err) => {console.log(err)})
+
     }
+
+
+
     setInput("");
   };
 
