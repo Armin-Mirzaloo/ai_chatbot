@@ -22,6 +22,7 @@ model User {
   password String
   created  DateTime @default(now())
   tokens   Tokens[]
+  conversations  Conversation[]
 }
 
 model Tokens {
@@ -31,4 +32,28 @@ model Tokens {
   user        User  @relation(fields: [user_id], references: [id]) 
   
   @@id([token, user_id])
+}
+
+model Conversation {
+  id       Int        @id @default(autoincrement())
+  user_id  Int
+  user     User       @relation(fields: [user_id], references: [id])
+  created  DateTime   @default(now())
+  title    String
+  messages Messages[]
+}
+
+model Messages {
+  conversation_id Int
+  conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sender          Role @default(USER)
+  content         String
+  created         DateTime     @default(now())
+
+  @@id([created, conversation_id])
+}
+
+enum Role {
+  BOT
+  USER
 }
