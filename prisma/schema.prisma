@@ -47,7 +47,7 @@ model Messages {
   conversation_id Int
   conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sender          Role @default(USER)
-  content         String
+  content         String  @db.Text
   created         DateTime     @default(now())
 
   @@id([created, conversation_id])

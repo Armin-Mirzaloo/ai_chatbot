@@ -10,10 +10,12 @@ const AuthContext = createContext()
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const router = useRouter()
+  const [token, setToken] = useState(null)
 
   useEffect(() => {
     const getUserInfo = async() => {
        const token = getCookie("token")
+       setToken(token)
     if (token) {
       setUser(await tokenDecoder(token))
     }  
@@ -34,7 +36,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, token, setToken}}>
       {children}
     </AuthContext.Provider>
   )
